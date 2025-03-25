@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "0N2lnxCqzV8=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\erikg\\Documents\\Dev\\Backend\\Pokemon reader\\CsvProject\\CsvProject.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\erikg\\.nuget\\packages\\csvhelper\\33.0.1\\csvhelper.33.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
