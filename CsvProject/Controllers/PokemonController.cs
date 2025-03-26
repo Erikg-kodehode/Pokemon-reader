@@ -1,154 +1,206 @@
-using CsvProject.Models;
-
-namespace CsvProject.Controllers;
-
-public class PokemonController
+namespace CsvProject.Controllers
 {
-    private readonly List<Pokemon> _pokemons;
+    using CsvProject.Models;
 
-    public PokemonController(List<Pokemon> pokemons)
+    public class PokemonController
     {
-        _pokemons = pokemons;
-    }
+        private readonly List<Pokemon> _pokemons;
 
-    public void QueryByName(string namePart)
-    {
-        var results = _pokemons
-            .Where(p => p.Name != null && p.Name.Contains(namePart, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        if (results.Count == 0)
+        public PokemonController(List<Pokemon> pokemons)
         {
-            Console.WriteLine("No Pokémon found with that name.");
-            return;
+            _pokemons = pokemons;
         }
 
-        Console.WriteLine($"\nFound {results.Count} Pokémon(s):");
-        foreach (var p in results)
-        {
-            Console.WriteLine($"- {p.Name} | HP: {p.HP}, Attack: {p.Attack}, Type: {p.Type1}/{p.Type2}");
-        }
-    }
-    public void QueryByLegendary(bool isLegendary)
-    {
-        var results = _pokemons
-            .Where(p => p.Legendary == isLegendary)
-            .OrderBy(p => p.Name)
-            .ToList();
+        // GUI methods (return List<string>)
 
-        string status = isLegendary ? "Legendary" : "Non-Legendary";
-
-        if (results.Count == 0)
+        public List<string> SearchByNameResults(string namePart)
         {
-            Console.WriteLine($"No {status} Pokémon found.");
-            return;
+            return _pokemons
+                .Where(p => p.Name.Contains(namePart, StringComparison.OrdinalIgnoreCase))
+                .Select(p => $"{p.Name} | HP: {p.HP} | Type: {p.Type1}/{p.Type2}")
+                .ToList();
         }
 
-        Console.WriteLine($"\n{results.Count} {status} Pokémon found:");
-        foreach (var p in results)
+        public List<string> SearchByTypeResults(string type)
         {
-            Console.WriteLine($"- {p.Name} | Type: {p.Type1}/{p.Type2} | Total: {p.Total}");
-        }
-    }
-    public void QueryByStage(int stage)
-    {
-        var results = _pokemons
-            .Where(p => p.Stage == stage)
-            .OrderBy(p => p.Name)
-            .ToList();
-
-        if (results.Count == 0)
-        {
-            Console.WriteLine($"No Pokémon found in evolution stage {stage}.");
-            return;
+            return _pokemons
+                .Where(p => p.Type1.Equals(type, StringComparison.OrdinalIgnoreCase) ||
+                            p.Type2.Equals(type, StringComparison.OrdinalIgnoreCase))
+                .Select(p => $"{p.Name} | Type: {p.Type1}/{p.Type2}")
+                .ToList();
         }
 
-        Console.WriteLine($"\n{results.Count} Pokémon found in Stage {stage}:");
-        foreach (var p in results)
+        public List<string> GetAllTypes()
         {
-            Console.WriteLine($"- {p.Name} | Stage: {p.Stage} | Type: {p.Type1}/{p.Type2}");
+            return _pokemons
+                .SelectMany(p => new[] { p.Type1, p.Type2 })
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(t => t)
+                .ToList();
         }
-    }
-
-
-
-    public void QueryByType(string type)
-    {
-        var results = _pokemons
-            .Where(p =>
-                (!string.IsNullOrEmpty(p.Type1) && p.Type1.Equals(type, StringComparison.OrdinalIgnoreCase)) ||
-                (!string.IsNullOrEmpty(p.Type2) && p.Type2.Equals(type, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
-
-        if (results.Count == 0)
+        public List<string> QueryByTotalRangeResults(int min, int max)
         {
-            Console.WriteLine("No Pokémon found with that type.");
-            return;
+            return _pokemons
+                .Where(p => p.Total >= min && p.Total <= max)
+                .OrderByDescending(p => p.Total)
+                .Select(p => $"{p.Name} | Total: {p.Total} | Type: {p.Type1}/{p.Type2}")
+                .ToList();
         }
 
-        Console.WriteLine($"\nFound {results.Count} Pokémon(s) of type '{type}':");
-        foreach (var p in results)
+        public List<string> ShowTopByStatResults(string stat, int count)
         {
-            Console.WriteLine($"- {p.Name} | HP: {p.HP}, Attack: {p.Attack}, Type: {p.Type1}/{p.Type2}");
-        }
-    }
+            var property = typeof(Pokemon).GetProperty(stat,
+                System.Reflection.BindingFlags.IgnoreCase |
+                System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.Instance);
 
-    public void QueryByTotalRange(int min, int max)
-    {
-        var results = _pokemons
-            .Where(p => p.Total >= min && p.Total <= max)
-            .OrderByDescending(p => p.Total)
-            .ToList();
+            if (property == null)
+            {
+                return new List<string> { "Invalid stat selected." };
+            }
 
-        if (results.Count == 0)
-        {
-            Console.WriteLine("No Pokémon found in that total range.");
-            return;
-        }
-
-        Console.WriteLine($"\nFound {results.Count} Pokémon(s) with total stats between {min} and {max}:");
-        foreach (var p in results)
-        {
-            Console.WriteLine($"- {p.Name} | Total: {p.Total}, HP: {p.HP}, Attack: {p.Attack}");
-        }
-    }
-
-    public void ShowTopByStat(string stat, int count)
-    {
-        var property = typeof(Pokemon).GetProperty(stat, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-        if (property == null)
-        {
-            Console.WriteLine("Invalid stat. Valid options: HP, Attack, Defense, Speed, Total");
-            return;
+            return _pokemons
+                .OrderByDescending(p => (int)property.GetValue(p))
+                .Take(count)
+                .Select(p => $"{p.Name} | {stat}: {property.GetValue(p)} | Type: {p.Type1}/{p.Type2}")
+                .ToList();
         }
 
-        var results = _pokemons
-            .OrderByDescending(p => (int?)property.GetValue(p))
-            .Take(count)
-            .ToList();
-
-        Console.WriteLine($"\nTop {count} Pokémon by {stat}:");
-        foreach (var p in results)
+        public List<string> QueryByLegendaryResults(bool isLegendary)
         {
-            Console.WriteLine($"- {p.Name} | {stat}: {property.GetValue(p)}, Type: {p.Type1}/{p.Type2}");
-        }
-    }
-
-    public void ListAllTypes()
-    {
-        var types = _pokemons
-            .SelectMany(p => new[] { p.Type1, p.Type2 })
-            .Where(t => !string.IsNullOrWhiteSpace(t))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(t => t)
-            .ToList();
-
-        Console.WriteLine("\nAvailable Pokémon Types:");
-        foreach (var type in types)
-        {
-            Console.WriteLine($"- {type}");
+            return _pokemons
+                .Where(p => p.Legendary == isLegendary)
+                .OrderBy(p => p.Name)
+                .Select(p => $"{p.Name} | Type: {p.Type1}/{p.Type2} | Total: {p.Total}")
+                .ToList();
         }
 
-        Console.WriteLine($"\nTotal types: {types.Count}");
+        public List<string> QueryByStageResults(int stage)
+        {
+            return _pokemons
+                .Where(p => p.Stage == stage)
+                .OrderBy(p => p.Name)
+                .Select(p => $"{p.Name} | Stage: {p.Stage} | Type: {p.Type1}/{p.Type2}")
+                .ToList();
+        }
+
+        // Console methods (no return, directly write to Console)
+
+        public void QueryByNameConsole(string namePart)
+        {
+            var results = _pokemons
+                .Where(p => p.Name.Contains(namePart, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (!results.Any())
+            {
+                Console.WriteLine("No Pokémon found with that name.");
+                return;
+            }
+
+            foreach (var p in results)
+                Console.WriteLine($"{p.Name} | Type: {p.Type1}/{p.Type2} | HP: {p.HP}");
+        }
+
+        public void QueryByTypeConsole(string type)
+        {
+            var results = _pokemons
+                .Where(p => p.Type1.Equals(type, StringComparison.OrdinalIgnoreCase) ||
+                            p.Type2.Equals(type, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (!results.Any())
+            {
+                Console.WriteLine("No Pokémon found with that type.");
+                return;
+            }
+
+            foreach (var p in results)
+                Console.WriteLine($"{p.Name} | Type: {p.Type1}/{p.Type2}");
+        }
+
+        public void QueryByTotalRangeConsole(int min, int max)
+        {
+            var results = _pokemons
+                .Where(p => p.Total >= min && p.Total <= max)
+                .OrderByDescending(p => p.Total)
+                .ToList();
+
+            if (!results.Any())
+            {
+                Console.WriteLine("No Pokémon found within that total range.");
+                return;
+            }
+
+            foreach (var p in results)
+                Console.WriteLine($"{p.Name} | Total: {p.Total}");
+        }
+
+        public void ShowTopByStatConsole(string stat, int count)
+        {
+            var property = typeof(Pokemon).GetProperty(stat,
+                System.Reflection.BindingFlags.IgnoreCase |
+                System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.Instance);
+
+            if (property == null)
+            {
+                Console.WriteLine("Invalid stat selected.");
+                return;
+            }
+
+            var results = _pokemons
+                .OrderByDescending(p => (int)property.GetValue(p))
+                .Take(count)
+                .ToList();
+
+            foreach (var p in results)
+                Console.WriteLine($"{p.Name} | {stat}: {property.GetValue(p)}");
+        }
+
+        public void ListAllTypesConsole()
+        {
+            var types = GetAllTypes();
+            Console.WriteLine("Pokémon Types:");
+            foreach (var type in types)
+                Console.WriteLine($"- {type}");
+        }
+
+        public void QueryByLegendaryConsole(bool isLegendary)
+        {
+            var results = _pokemons
+                .Where(p => p.Legendary == isLegendary)
+                .OrderBy(p => p.Name)
+                .ToList();
+
+            string label = isLegendary ? "Legendary" : "Non-Legendary";
+
+            if (!results.Any())
+            {
+                Console.WriteLine($"No {label} Pokémon found.");
+                return;
+            }
+
+            foreach (var p in results)
+                Console.WriteLine($"{p.Name} | Type: {p.Type1}/{p.Type2} | Total: {p.Total}");
+        }
+
+        public void QueryByStageConsole(int stage)
+        {
+            var results = _pokemons
+                .Where(p => p.Stage == stage)
+                .OrderBy(p => p.Name)
+                .ToList();
+
+            if (!results.Any())
+            {
+                Console.WriteLine($"No Pokémon found in stage {stage}.");
+                return;
+            }
+
+            foreach (var p in results)
+                Console.WriteLine($"{p.Name} | Stage: {p.Stage}");
+        }
     }
 }

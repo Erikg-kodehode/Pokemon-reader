@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "i7p+HH13P/s=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\erikg\\Documents\\Dev\\Backend\\Pokemon reader\\PokemonReader.WinForms\\PokemonReader.WinForms.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\erikg\\.nuget\\packages\\csvhelper\\33.0.1\\csvhelper.33.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,40 +1,16 @@
 using CsvProject.Controllers;
 using CsvProject.Services;
-using CsvProject.Models;
 
-namespace CsvProject;
-
-class Program
+namespace CsvProject
 {
-    static void Main()
+    internal class Program
     {
-        var csvPath = Path.Combine(AppContext.BaseDirectory, "Data", "pokemon.csv");
-        if (!File.Exists(csvPath))
+        static void Main()
         {
-            Console.WriteLine("CSV file not found in 'Data' folder. Please enter the full path:");
-            csvPath = Console.ReadLine()?.Trim() ?? "";
+            var pokemons = CsvReaderService.ReadPokemonCsv("Data/pokemon.csv");
+            var controller = new PokemonController(pokemons);
+            var menu = new MenuHandler(controller);
+            menu.Run();
         }
-
-        if (!File.Exists(csvPath))
-        {
-            Console.WriteLine("File not found. Exiting...");
-            return;
-        }
-
-        List<Pokemon> pokemons;
-
-        try
-        {
-            pokemons = CsvReaderService.ReadPokemonCsv(csvPath);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading CSV: {ex.Message}");
-            return;
-        }
-
-        var controller = new PokemonController(pokemons);
-        var menuHandler = new MenuHandler(controller);
-        menuHandler.Run();
     }
 }
