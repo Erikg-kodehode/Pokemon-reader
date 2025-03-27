@@ -11,7 +11,6 @@ namespace PokemonReader.WinForms
 {
     public partial class MainForm : Form
     {
-        // Pokedex-themed colors
         private static readonly Color PokedexRedDark = Color.FromArgb(178, 8, 32);
         private static readonly Color ButtonBlack = Color.Black;
         private static readonly Color ScreenGreen = Color.FromArgb(50, 205, 50);
@@ -21,40 +20,37 @@ namespace PokemonReader.WinForms
         public MainForm()
         {
             InitializeComponent();
-            InitializeData();
 
-            // Apply styling
+            InitializeData();
             StyleForm();
             StylePanels();
             StyleAllButtons();
-
-            // Show main menu by default; hide feature panels
-            panelMenu.Visible = true;
             HideAllFeaturePanels();
+            panelMenu.Visible = true;
 
-            // Wire up menu button events
+            // Wire menu buttons
             btnNameMenu.Click += btnFeatureMenu_Click;
             btnTypeMenu.Click += btnFeatureMenu_Click;
             btnLegendaryMenu.Click += btnFeatureMenu_Click;
             btnStageMenu.Click += btnFeatureMenu_Click;
 
-            // Wire up Name panel events
+            // Name panel events
             btnSearchByName.Click += btnSearchByName_Click;
             btnBackFromName.Click += (s, e) => ShowMenu(panelName);
 
-            // Wire up Type panel events
+            // Type panel events
             btnSearchByType.Click += btnSearchByType_Click;
             btnShowAllTypes.Click += btnShowAllTypes_Click;
             btnBackFromType.Click += (s, e) => ShowMenu(panelType);
+            listTypeResults.SelectedIndexChanged += listTypeResults_SelectedIndexChanged;
 
-            // Wire up Legendary panel events
+            // Legendary panel
             btnBackFromLegendary.Click += (s, e) => ShowMenu(panelLegendary);
 
-            // Wire up Stage (Evolution Family) panel events
+            // Stage panel (evolution family)
             btnSearchStage.Click += btnStageSearch_Click;
             btnBackFromStage.Click += (s, e) => ShowMenu(panelStage);
 
-            // Ensure full application exit on close
             this.FormClosing += MainForm_FormClosing;
         }
 
@@ -73,7 +69,6 @@ namespace PokemonReader.WinForms
             }
         }
 
-        // Hide all feature panels
         private void HideAllFeaturePanels()
         {
             panelName.Visible = false;
@@ -82,7 +77,6 @@ namespace PokemonReader.WinForms
             panelStage.Visible = false;
         }
 
-        // Return to main menu
         private void ShowMenu(Panel currentPanel)
         {
             currentPanel.Visible = false;
@@ -139,15 +133,42 @@ namespace PokemonReader.WinForms
             DisplayResults(allTypes, listTypeResults);
         }
 
+        private void listTypeResults_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (listTypeResults.SelectedItem != null)
+            {
+                string selectedType = listTypeResults.SelectedItem.ToString();
+                txtType.Text = selectedType;
+                var results = _controller.SearchByTypeResults(selectedType);
+                DisplayResults(results, listTypeResults);
+            }
+        }
+
         // --- Stage Panel (Evolution Family) ---
-        // Instead of a numeric input, use a text box for a Pokémon name.
         private void btnStageSearch_Click(object? sender, EventArgs e)
         {
             string searchName = txtStageSearch.Text.Trim();
-            DisplayResults(_controller.GetEvolutionFamily(searchName), listStageResults);
+            var family = _controller.GetEvolutionFamily(searchName);
+
+            listStageResults.Items.Clear();
+
+            if (family == null || family.Count == 0)
+            {
+                listStageResults.Items.Add("No results found.");
+                return;
+            }
+
+            string familyName = $"Evolution Family: {string.Join(" → ", family)}";
+            listStageResults.Items.Add(familyName);
+            listStageResults.Items.Add(""); // Spacer
+            listStageResults.Items.Add("Members:");
+            foreach (var member in family)
+            {
+                listStageResults.Items.Add($"- {member}");
+            }
         }
 
-        // Helper method to display results in a ListBox
+        // --- Helper ---
         private void DisplayResults(List<string> results, ListBox listBox)
         {
             listBox.Items.Clear();
@@ -170,7 +191,7 @@ namespace PokemonReader.WinForms
             Environment.Exit(0);
         }
 
-        // --- Styling Methods ---
+        // --- Styling ---
         private void StyleForm()
         {
             this.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
@@ -206,25 +227,25 @@ namespace PokemonReader.WinForms
                 }
             }
 
-            // Main menu buttons
+            // Menu
             StyleButton(btnNameMenu);
             StyleButton(btnTypeMenu);
             StyleButton(btnLegendaryMenu);
             StyleButton(btnStageMenu);
 
-            // Name panel buttons
+            // Name
             StyleButton(btnSearchByName);
             StyleButton(btnBackFromName);
 
-            // Type panel buttons
+            // Type
             StyleButton(btnSearchByType);
             StyleButton(btnShowAllTypes);
             StyleButton(btnBackFromType);
 
-            // Legendary panel button
+            // Legendary
             StyleButton(btnBackFromLegendary);
 
-            // Stage panel buttons
+            // Stage
             StyleButton(btnSearchStage);
             StyleButton(btnBackFromStage);
         }

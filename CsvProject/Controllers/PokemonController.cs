@@ -98,22 +98,35 @@ namespace CsvProject.Controllers
             var pokemon = _pokemons.FirstOrDefault(p => p.Name.Equals(pokemonName, StringComparison.OrdinalIgnoreCase));
             if (pokemon == null)
             {
-                return new List<string>(); // Pokémon not found
+                return new List<string> { $"No Pokémon found with the name '{pokemonName}'." };
             }
 
-            // If EvolutionFamily is not set, return only this Pokémon.
+            // If EvolutionFamily is missing, show only this Pokémon
             if (string.IsNullOrWhiteSpace(pokemon.EvolutionFamily))
             {
-                return new List<string> { $"{pokemon.Name} (No evolution data)" };
+                return new List<string> { $"{pokemon.Name} (No evolution data available)" };
             }
 
-            // Return all Pokémon in the same evolution family, ordered by stage.
-            return _pokemons
+            // Get all Pokémon in the same evolution family
+            var familyMembers = _pokemons
                 .Where(p => !string.IsNullOrWhiteSpace(p.EvolutionFamily) &&
                             p.EvolutionFamily.Equals(pokemon.EvolutionFamily, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(p => p.Stage)
-                .Select(p => $"{p.Name} | Stage: {p.Stage} | Type: {p.Type1}/{p.Type2}")
                 .ToList();
+
+            var results = new List<string>
+    {
+        $"Evolution Family: {pokemon.EvolutionFamily}",
+        ""
+    };
+
+            foreach (var member in familyMembers)
+            {
+                string typeInfo = member.Type2 != "None" ? $"{member.Type1}/{member.Type2}" : member.Type1;
+                results.Add($"- {member.Name} (Stage {member.Stage}, Type: {typeInfo})");
+            }
+
+            return results;
         }
 
         // Console methods … (unchanged)

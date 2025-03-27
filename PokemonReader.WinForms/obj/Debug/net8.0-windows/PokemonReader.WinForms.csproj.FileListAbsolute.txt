@@ -1,7 +1,8 @@
 C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\CsvProject.deps.json
 C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\CsvProject.runtimeconfig.json
-C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\CsvProject.exe
 C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\Data\pokemon.csv
+C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\CsvProject.exe
+C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\Resources\pokedex_bg.png
 C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\PokemonReader.WinForms.exe
 C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\PokemonReader.WinForms.deps.json
 C:\Users\erikg\Documents\Dev\Backend\Pokemon reader\PokemonReader.WinForms\bin\Debug\net8.0-windows\PokemonReader.WinForms.runtimeconfig.json
