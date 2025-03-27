@@ -13,4 +13,7 @@ public class Pokemon
     public int Speed { get; set; }
     public bool Legendary { get; set; }
     public int Stage { get; set; }
+
+    // NEW: EvolutionFamily property for grouping evolutions.
+    public string? EvolutionFamily { get; set; }
 }

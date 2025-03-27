@@ -1,133 +1,240 @@
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace PokemonReader.WinForms
 {
     partial class MainForm
     {
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && components != null)
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        #region Windows Form Designer generated code
 
         private void InitializeComponent()
         {
-            this.panelMenu = new System.Windows.Forms.Panel();
-            this.lblWelcome = new System.Windows.Forms.Label();
-            this.btnEnter = new System.Windows.Forms.Button();
+            this.components = new Container();
 
-            this.tabControlFeatures = new System.Windows.Forms.TabControl();
-            this.tabName = new System.Windows.Forms.TabPage();
-            this.txtName = new System.Windows.Forms.TextBox();
-            this.btnSearchByName = new System.Windows.Forms.Button();
+            // Panels
+            this.panelMenu = new Panel();
+            this.panelName = new Panel();
+            this.panelType = new Panel();
+            this.panelLegendary = new Panel();
+            this.panelStage = new Panel();
 
-            // 
+            // Menu Buttons
+            this.btnNameMenu = new Button();
+            this.btnTypeMenu = new Button();
+            this.btnLegendaryMenu = new Button();
+            this.btnStageMenu = new Button();
+
+            // Name Panel Controls
+            this.txtName = new TextBox();
+            this.btnSearchByName = new Button();
+            this.listNameResults = new ListBox();
+            this.btnBackFromName = new Button();
+
+            // Type Panel Controls
+            this.txtType = new TextBox();
+            this.btnSearchByType = new Button();
+            this.btnShowAllTypes = new Button();
+            this.listTypeResults = new ListBox();
+            this.btnBackFromType = new Button();
+
+            // Legendary Panel Controls
+            this.listLegendaryResults = new ListBox();
+            this.btnBackFromLegendary = new Button();
+
+            // Stage Panel Controls (Evolution Family search)
+            // Replace numeric input with a TextBox for search
+            this.txtStageSearch = new TextBox();
+            this.btnSearchStage = new Button();
+            this.listStageResults = new ListBox();
+            this.btnBackFromStage = new Button();
+
+            // -------------------------------
             // panelMenu
-            // 
-            this.panelMenu.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMenu.Controls.Add(this.lblWelcome);
-            this.panelMenu.Controls.Add(this.btnEnter);
-            this.panelMenu.Location = new System.Drawing.Point(0, 0);
-            this.panelMenu.Name = "panelMenu";
-            this.panelMenu.Size = new System.Drawing.Size(800, 450);
-            this.panelMenu.TabIndex = 0;
+            // -------------------------------
+            this.panelMenu.Size = new Size(800, 500);
+            this.panelMenu.Location = new Point(0, 0);
+            this.panelMenu.Visible = true;
+            // Main menu buttons (positioned vertically)
+            this.btnNameMenu.Text = "Search by Name";
+            this.btnNameMenu.Size = new Size(220, 60);
+            this.btnNameMenu.Location = new Point(290, 50);
 
-            // 
-            // lblWelcome
-            // 
-            this.lblWelcome.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblWelcome.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblWelcome.Location = new System.Drawing.Point(0, 0);
-            this.lblWelcome.Name = "lblWelcome";
-            this.lblWelcome.Size = new System.Drawing.Size(800, 100);
-            this.lblWelcome.TabIndex = 0;
-            this.lblWelcome.Text = "Welcome to the Pokédex!";
-            this.lblWelcome.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnTypeMenu.Text = "Search by Type";
+            this.btnTypeMenu.Size = new Size(220, 60);
+            this.btnTypeMenu.Location = new Point(290, 120);
 
-            // 
-            // btnEnter
-            // 
-            this.btnEnter.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnEnter.Location = new System.Drawing.Point(350, 200);
-            this.btnEnter.Name = "btnEnter";
-            this.btnEnter.Size = new System.Drawing.Size(100, 40);
-            this.btnEnter.TabIndex = 1;
-            this.btnEnter.Text = "Enter Pokedex";
-            this.btnEnter.UseVisualStyleBackColor = true;
-            this.btnEnter.Click += new System.EventHandler(this.btnEnter_Click);
+            this.btnLegendaryMenu.Text = "Legendary Pokémon";
+            this.btnLegendaryMenu.Size = new Size(220, 60);
+            this.btnLegendaryMenu.Location = new Point(290, 190);
 
-            // 
-            // tabControlFeatures
-            // 
-            this.tabControlFeatures.Controls.Add(this.tabName);
-            this.tabControlFeatures.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControlFeatures.Location = new System.Drawing.Point(0, 0);
-            this.tabControlFeatures.Name = "tabControlFeatures";
-            this.tabControlFeatures.SelectedIndex = 0;
-            this.tabControlFeatures.Size = new System.Drawing.Size(800, 450);
-            this.tabControlFeatures.TabIndex = 1;
-            this.tabControlFeatures.Visible = false;
+            // Rename Stage feature to "Evolution Family"
+            this.btnStageMenu.Text = "Evolution Family";
+            this.btnStageMenu.Size = new Size(220, 60);
+            this.btnStageMenu.Location = new Point(290, 260);
 
-            // 
-            // tabName
-            // 
-            this.tabName.Controls.Add(this.txtName);
-            this.tabName.Controls.Add(this.btnSearchByName);
-            this.tabName.Location = new System.Drawing.Point(4, 24);
-            this.tabName.Name = "tabName";
-            this.tabName.Padding = new System.Windows.Forms.Padding(3);
-            this.tabName.Size = new System.Drawing.Size(792, 422);
-            this.tabName.TabIndex = 0;
-            this.tabName.Text = "Search by Name";
-            this.tabName.UseVisualStyleBackColor = true;
+            this.panelMenu.Controls.AddRange(new Control[]
+            {
+                this.btnNameMenu,
+                this.btnTypeMenu,
+                this.btnLegendaryMenu,
+                this.btnStageMenu
+            });
 
-            // 
-            // txtName
-            // 
-            this.txtName.Location = new System.Drawing.Point(20, 20);
-            this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(200, 23);
-            this.txtName.TabIndex = 0;
-
-            // 
-            // btnSearchByName
-            // 
-            this.btnSearchByName.Location = new System.Drawing.Point(230, 20);
-            this.btnSearchByName.Name = "btnSearchByName";
-            this.btnSearchByName.Size = new System.Drawing.Size(120, 23);
-            this.btnSearchByName.TabIndex = 1;
+            // -------------------------------
+            // panelName
+            // -------------------------------
+            this.txtName.Location = new Point(20, 20);
+            this.txtName.Width = 150;
             this.btnSearchByName.Text = "Search";
-            this.btnSearchByName.UseVisualStyleBackColor = true;
-            this.btnSearchByName.Click += new System.EventHandler(this.btnSearchByName_Click);
+            this.btnSearchByName.Location = new Point(200, 20);
+            this.btnSearchByName.Size = new Size(80, 30);
+            this.listNameResults.Location = new Point(20, 60);
+            this.listNameResults.Size = new Size(400, 300);
+            this.btnBackFromName.Text = "Back";
+            this.btnBackFromName.Location = new Point(20, 370);
+            this.btnBackFromName.Size = new Size(80, 30);
+            this.panelName.Size = new Size(800, 500);
+            this.panelName.Location = new Point(0, 0);
+            this.panelName.Visible = false;
+            this.panelName.Controls.AddRange(new Control[]
+            {
+                this.txtName,
+                this.btnSearchByName,
+                this.listNameResults,
+                this.btnBackFromName
+            });
 
-            // 
-            // MainForm
-            // 
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.tabControlFeatures);
-            this.Controls.Add(this.panelMenu);
-            this.Name = "MainForm";
+            // -------------------------------
+            // panelType
+            // -------------------------------
+            this.txtType.Location = new Point(20, 20);
+            this.txtType.Width = 150;
+            this.btnSearchByType.Text = "Search";
+            this.btnSearchByType.Location = new Point(200, 20);
+            this.btnSearchByType.Size = new Size(80, 30);
+            this.btnShowAllTypes.Text = "Show All Types";
+            this.btnShowAllTypes.Location = new Point(290, 20);
+            this.btnShowAllTypes.Size = new Size(100, 30);
+            this.listTypeResults.Location = new Point(20, 60);
+            this.listTypeResults.Size = new Size(400, 300);
+            this.btnBackFromType.Text = "Back";
+            this.btnBackFromType.Location = new Point(20, 370);
+            this.btnBackFromType.Size = new Size(80, 30);
+            this.panelType.Size = new Size(800, 500);
+            this.panelType.Location = new Point(0, 0);
+            this.panelType.Visible = false;
+            this.panelType.Controls.AddRange(new Control[]
+            {
+                this.txtType,
+                this.btnSearchByType,
+                this.btnShowAllTypes,
+                this.listTypeResults,
+                this.btnBackFromType
+            });
+
+            // -------------------------------
+            // panelLegendary
+            // -------------------------------
+            this.listLegendaryResults.Location = new Point(20, 20);
+            this.listLegendaryResults.Size = new Size(400, 340);
+            this.btnBackFromLegendary.Text = "Back";
+            this.btnBackFromLegendary.Location = new Point(20, 370);
+            this.btnBackFromLegendary.Size = new Size(80, 30);
+            this.panelLegendary.Size = new Size(800, 500);
+            this.panelLegendary.Location = new Point(0, 0);
+            this.panelLegendary.Visible = false;
+            this.panelLegendary.Controls.AddRange(new Control[]
+            {
+                this.listLegendaryResults,
+                this.btnBackFromLegendary
+            });
+
+            // -------------------------------
+            // panelStage (Evolution Family)
+            // -------------------------------
+            // Use a TextBox to search for a Pokémon name
+            this.txtStageSearch = new TextBox();
+            this.txtStageSearch.Location = new Point(20, 20);
+            this.txtStageSearch.Width = 150;
+            this.txtStageSearch.PlaceholderText = "Enter Pokemon";
+            this.btnSearchStage = new Button();
+            this.btnSearchStage.Text = "Search";
+            this.btnSearchStage.Location = new Point(200, 20);
+            this.btnSearchStage.Size = new Size(80, 30);
+            this.listStageResults = new ListBox();
+            this.listStageResults.Location = new Point(20, 60);
+            this.listStageResults.Size = new Size(400, 300);
+            this.btnBackFromStage = new Button();
+            this.btnBackFromStage.Text = "Back";
+            this.btnBackFromStage.Location = new Point(20, 370);
+            this.btnBackFromStage.Size = new Size(80, 30);
+            this.panelStage = new Panel();
+            this.panelStage.Size = new Size(800, 500);
+            this.panelStage.Location = new Point(0, 0);
+            this.panelStage.Visible = false;
+            this.panelStage.Controls.AddRange(new Control[]
+            {
+            this.txtStageSearch,
+            this.btnSearchStage,
+            this.listStageResults,
+            this.btnBackFromStage
+            });
+
+            // -------------------------------
+            // Add panels to the Form
+            // -------------------------------
+            this.Controls.AddRange(new Control[]
+            {
+                this.panelMenu,
+                this.panelName,
+                this.panelType,
+                this.panelLegendary,
+                this.panelStage
+            });
+
+            // -------------------------------
+            // Form properties
+            // -------------------------------
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.ClientSize = new Size(800, 500);
             this.Text = "Pokémon Reader";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-
-            this.panelMenu.ResumeLayout(false);
-            this.tabControlFeatures.ResumeLayout(false);
-            this.tabName.ResumeLayout(false);
-            this.tabName.PerformLayout();
-            this.ResumeLayout(false);
         }
 
-        private System.Windows.Forms.Panel panelMenu;
-        private System.Windows.Forms.Label lblWelcome;
-        private System.Windows.Forms.Button btnEnter;
+        #endregion
 
-        private System.Windows.Forms.TabControl tabControlFeatures;
-        private System.Windows.Forms.TabPage tabName;
+        // Declarations
+        private Panel panelMenu;
+        private Panel panelName;
+        private Panel panelType;
+        private Panel panelLegendary;
+        private Panel panelStage;
 
-        private System.Windows.Forms.TextBox txtName;
-        private System.Windows.Forms.Button btnSearchByName;
+        private Button btnNameMenu;
+        private Button btnTypeMenu;
+        private Button btnLegendaryMenu;
+        private Button btnStageMenu;
+
+        private TextBox txtName;
+        private Button btnSearchByName;
+        private ListBox listNameResults;
+        private Button btnBackFromName;
+
+        private TextBox txtType;
+        private Button btnSearchByType;
+        private Button btnShowAllTypes;
+        private ListBox listTypeResults;
+        private Button btnBackFromType;
+
+        private ListBox listLegendaryResults;
+        private Button btnBackFromLegendary;
+
+        private TextBox txtStageSearch;
+        private Button btnSearchStage;
+        private ListBox listStageResults;
+        private Button btnBackFromStage;
     }
 }

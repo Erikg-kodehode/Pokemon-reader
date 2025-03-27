@@ -1,6 +1,9 @@
 namespace CsvProject.Controllers
 {
     using CsvProject.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class PokemonController
     {
@@ -11,7 +14,7 @@ namespace CsvProject.Controllers
             _pokemons = pokemons;
         }
 
-        // GUI methods (return List<string>)
+        // Existing methods …
 
         public List<string> SearchByNameResults(string namePart)
         {
@@ -24,8 +27,10 @@ namespace CsvProject.Controllers
         public List<string> SearchByTypeResults(string type)
         {
             return _pokemons
-                .Where(p => p.Type1.Equals(type, StringComparison.OrdinalIgnoreCase) ||
-                            p.Type2.Equals(type, StringComparison.OrdinalIgnoreCase))
+                .Where(p =>
+                    (!string.IsNullOrEmpty(p.Type1) && p.Type1.Equals(type, StringComparison.OrdinalIgnoreCase)) ||
+                    (!string.IsNullOrEmpty(p.Type2) && p.Type2.Equals(type, StringComparison.OrdinalIgnoreCase))
+                )
                 .Select(p => $"{p.Name} | Type: {p.Type1}/{p.Type2}")
                 .ToList();
         }
@@ -39,6 +44,7 @@ namespace CsvProject.Controllers
                 .OrderBy(t => t)
                 .ToList();
         }
+
         public List<string> QueryByTotalRangeResults(int min, int max)
         {
             return _pokemons
@@ -85,8 +91,32 @@ namespace CsvProject.Controllers
                 .ToList();
         }
 
-        // Console methods (no return, directly write to Console)
+        // NEW: GetEvolutionFamily returns all Pokémon that share the same evolution family.
+        public List<string> GetEvolutionFamily(string pokemonName)
+        {
+            // Find the Pokémon by name (case-insensitive)
+            var pokemon = _pokemons.FirstOrDefault(p => p.Name.Equals(pokemonName, StringComparison.OrdinalIgnoreCase));
+            if (pokemon == null)
+            {
+                return new List<string>(); // Pokémon not found
+            }
 
+            // If EvolutionFamily is not set, return only this Pokémon.
+            if (string.IsNullOrWhiteSpace(pokemon.EvolutionFamily))
+            {
+                return new List<string> { $"{pokemon.Name} (No evolution data)" };
+            }
+
+            // Return all Pokémon in the same evolution family, ordered by stage.
+            return _pokemons
+                .Where(p => !string.IsNullOrWhiteSpace(p.EvolutionFamily) &&
+                            p.EvolutionFamily.Equals(pokemon.EvolutionFamily, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(p => p.Stage)
+                .Select(p => $"{p.Name} | Stage: {p.Stage} | Type: {p.Type1}/{p.Type2}")
+                .ToList();
+        }
+
+        // Console methods … (unchanged)
         public void QueryByNameConsole(string namePart)
         {
             var results = _pokemons
