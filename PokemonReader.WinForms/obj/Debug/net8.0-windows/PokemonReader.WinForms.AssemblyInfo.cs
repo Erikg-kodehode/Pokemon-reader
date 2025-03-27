@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PokemonReader.WinForms")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7576e23d22e490cec6ce709fc1a6b875a937e5c9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eaf056dd2371fe78a746a5e39f4c4d2a803234c7")]
 [assembly: System.Reflection.AssemblyProductAttribute("PokemonReader.WinForms")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PokemonReader.WinForms")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
