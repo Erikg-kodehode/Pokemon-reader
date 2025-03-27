@@ -24,7 +24,7 @@ namespace PokemonReader.WinForms
                 using (var original = Image.FromFile(imagePath))
                 {
                     // Adjust this crop to tightly frame the full Pokédex device
-                    Rectangle cropArea = new Rectangle(120, 80, 880, 70); // X, Y, Width, Height
+                    Rectangle cropArea = new Rectangle(120, 80, 820, 720); // X, Y, Width, Height
 
                     Bitmap cropped = new Bitmap(cropArea.Width, cropArea.Height);
                     using (Graphics g = Graphics.FromImage(cropped))
